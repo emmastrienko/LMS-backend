@@ -8,6 +8,7 @@ import ejs from "ejs";
 import path from "path";
 import sendMail from "../utils/sendMail";
 import { sendToken } from "../utils/jwt";
+import { redis } from "../utils/redis";
 
 // register user
 interface IRegistrationBody {
@@ -169,7 +170,11 @@ export const logoutUser = CatchAsyncError(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       res.cookie("access_token", "", { maxAge: 1 });
-      res.cookie("refresh_token", "", { maxAge: 1 });
+      res.cookie("refresh_cookie", "", { maxAge: 1 });
+
+      const userId = req.user?._id ? req.user._id.toString() : '';
+      redis.del(userId)
+      
       res.status(200).json({
         success: true,
         message: "Loged out successfully",
