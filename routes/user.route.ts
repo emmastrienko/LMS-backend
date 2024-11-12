@@ -7,6 +7,7 @@ import {
   registrationUser,
   sicialAuth,
   updateAccessToken,
+  updateUserInfo,
 } from "../controllers/user.controller";
 import { authorizeRole, isAuthenticated } from "../middleware/auth";
 
@@ -25,6 +26,8 @@ userRouter.get("/refresh", updateAccessToken);
 userRouter.get("/me", isAuthenticated, getUserInfo);
 
 userRouter.post("/social-auth", sicialAuth)
+
+userRouter.put("/update-user-info", isAuthenticated, updateUserInfo)
 
 
 export default userRouter;
