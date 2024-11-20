@@ -8,6 +8,7 @@ import {
   getSingleCourse,
   uploadCourse,
   addReview,
+  addReplyToReview,
 } from "../controllers/course.controller";
 import { authorizeRole, isAuthenticated } from "../middleware/auth";
 const courseRouter = express.Router();
@@ -37,5 +38,12 @@ courseRouter.put("/add-question", isAuthenticated, addQuestion);
 courseRouter.put("/add-answer", isAuthenticated, addAnswer);
 
 courseRouter.put("/add-review/:id", isAuthenticated, addReview);
+
+courseRouter.put(
+  "/add-reply",
+  isAuthenticated,
+  authorizeRole("admin"),
+  addReplyToReview
+);
 
 export default courseRouter;
