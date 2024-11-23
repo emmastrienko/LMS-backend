@@ -1,4 +1,4 @@
-import mongoose, { Document, Model, Schema } from "mongoose";
+import mongoose, { Document, Model, ObjectId, Schema } from "mongoose";
 import { IUser } from "./user.model";
 
 interface IComment extends Document {
@@ -33,6 +33,7 @@ interface ICourseData extends Document {
 }
 
 interface ICourse extends Document {
+  _id: string;
   name: string;
   description?: string;
   price: number;

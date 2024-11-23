@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Confirmation</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="message-sm">
+        <h1>Your order is confirmed</h1>
+        <p>And we're as excited as you are.</p>
+      </div>
+      <br />
+      <br />
+      <div class="course-info">
+        <h4>Here's what you ordered:</h4>
+        <table style="border-bottom: 1px solid #0000002f">
+          <tr>
+            <td>Order #: <%= order._id %></td>
+            <td>Order Date: <%= order.date %></td>
+          </tr>
+        </table>
+        <table style="width: 90; margin: auto; display: block">
+          <tr>
+            <td>Item</td>
+            <td>Qty</td>
+            <td>cost</td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <td><%= order.name %></td>
+            <td>1</td>
+            <td><%= order.price %></td>
+          </tr>
+        </table>
+
+        <table>
+          <tr>
+            <td>Subtotal:</td>
+            <td><%= order.price %></td>
+          </tr>
+        </table>
+        <table>
+          <tr>
+            <td>Total:</td>
+            <td><%= order.price %></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </body>
+</html>
