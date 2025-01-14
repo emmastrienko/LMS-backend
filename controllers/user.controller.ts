@@ -213,7 +213,9 @@ export const updateAccessToken = CatchAsyncError(
       const session = await redis.get(decoded.id as string);
 
       if (!session) {
-        return next(new ErrorHandler("Please login to access this resource", 400));
+        return next(
+          new ErrorHandler("Please login to access this resource", 400)
+        );
       }
 
       const user = JSON.parse(session);
@@ -384,16 +386,16 @@ export const updateProfilePicture = CatchAsyncError(
       if (avatar && user) {
         if (user?.avatar?.public_id) {
           await cloudinary.v2.uploader.destroy(user?.avatar?.public_id);
-        } else {
-          const myCloud = await cloudinary.v2.uploader.upload(avatar, {
-            folder: "avatars",
-            width: 150,
-          });
-          user.avatar = {
-            public_id: myCloud.public_id,
-            url: myCloud.secure_url,
-          };
         }
+        const myCloud = await cloudinary.v2.uploader.upload(avatar, {
+          folder: "avatars",
+          width: 150,
+        });
+
+        user.avatar = {
+          public_id: myCloud.public_id,
+          url: myCloud.secure_url,
+        };
       }
 
       await user?.save();
