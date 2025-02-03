@@ -11,6 +11,7 @@ import path from "path";
 import sendMail from "../utils/sendMail";
 import { error } from "console";
 import NotificationModel from "../models/notification.model";
+import axios from "axios";
 
 // upload course
 export const uploadCourse = CatchAsyncError(
@@ -207,8 +208,8 @@ export const addQuestion = CatchAsyncError(
       await NotificationModel.create({
         user: req.user?._id,
         title: "New Question Recieved",
-        message: `You have a new question in ${courseContent.title}`
-      })
+        message: `You have a new question in ${courseContent.title}`,
+      });
 
       // save the updated course
       await course?.save();
@@ -273,8 +274,8 @@ export const addAnswer = CatchAsyncError(
         await NotificationModel.create({
           user: req.user?._id,
           title: "New Question Reply Received",
-          message: `You have a new question reply in ${courseContent.title}`
-        })
+          message: `You have a new question reply in ${courseContent.title}`,
+        });
       } else {
         const data = {
           name: question.user.name,
@@ -460,3 +461,26 @@ export const deleteCourse = CatchAsyncError(
   }
 );
 
+// generate video url
+export const generateVideoUrl = CatchAsyncError(
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { videoId } = req.body;
+      const response = await axios.post(
+        `https://dev.vdocipher.com/api/videos/${videoId}/otp`,
+        { ttl: 300 },
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Apisecret ${process.env.VDOCIPHER_API_SECRET}`,
+          },
+        }
+      );
+
+      res.json(response.data);
+    } catch (error: any) {
+      return next(new ErrorHandler(error.message, 400));
+    }
+  }
+);
