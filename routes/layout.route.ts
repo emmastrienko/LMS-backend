@@ -21,7 +21,7 @@ layoutRouter.put(
 );
 
 layoutRouter.get(
-  "/get-layout",
+  "/get-layout/:type",
   getLayoutByType
 )
 

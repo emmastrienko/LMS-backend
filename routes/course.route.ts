@@ -11,6 +11,7 @@ import {
   addReplyToReview,
   deleteCourse,
   generateVideoUrl,
+  getAdminAllCourses,
 } from "../controllers/course.controller";
 import { authorizeRole, isAuthenticated } from "../middleware/auth";
 import { updateAccessToken } from "../controllers/user.controller";
@@ -35,6 +36,8 @@ courseRouter.put(
 courseRouter.get("/get-course/:id", getSingleCourse);
 
 courseRouter.get("/get-courses", getAllCourses);
+
+courseRouter.get("/get-admin-courses", isAuthenticated, authorizeRole("admin"), getAdminAllCourses);
 
 courseRouter.get(
   "/get-course-content/:id",
