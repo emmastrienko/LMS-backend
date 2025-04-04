@@ -140,7 +140,7 @@ export const getCourseByUser = CatchAsyncError(
       const courseId = req.params.id;
 
       const courseExist = userCourseList?.find(
-        (course: any) => course._id.toString() === courseId
+        (course: any) => course?.courseId.toString() === courseId
       );
 
       if (!courseExist) {
@@ -255,6 +255,8 @@ export const addAnswer = CatchAsyncError(
       const newAnswer: any = {
         user: req.user,
         answer,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       // add this answer to our course content
@@ -318,7 +320,7 @@ export const addReview = CatchAsyncError(
 
       // check if the courseId already exists in userCourseList based on id
       const courseExists = userCourseList?.some(
-        (course: any) => course._id.toString() === courseId.toString()
+        (course: any) => course.courseId.toString() === courseId.toString()
       );
 
       if (!courseExists) {
@@ -351,12 +353,14 @@ export const addReview = CatchAsyncError(
 
       await course?.save();
 
-      const notification = {
-        title: "New Review Received",
-        message: `${req.user?.name} has given a review in ${course?.name}`,
-      };
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7 days
 
       // create notification
+      await NotificationModel.create({
+        user: req.user?._id,
+        title: "New Review Recieved",
+        message: `${req.user?.name} has given a review in ${course?.name}`,
+      });
 
       res.status(200).json({
         success: true,
@@ -397,6 +401,8 @@ export const addReplyToReview = CatchAsyncError(
       const replyData: any = {
         user: req.user,
         comment,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
       if (!review.commentReplies) {
@@ -406,6 +412,8 @@ export const addReplyToReview = CatchAsyncError(
       review.commentReplies.push(replyData);
 
       await course?.save();
+
+      await redis.set(courseId, JSON.stringify(course), "EX", 604800); // 7 days
 
       res.status(200).json({
         success: true,
